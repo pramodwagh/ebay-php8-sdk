@@ -1,4 +1,5 @@
 <?php
+
 namespace PWCode\eBaySDK\Parser;
 
 /**
@@ -178,7 +179,7 @@ class XmlParser
             foreach ($attributes as $attribute => $value) {
                 // These attribute will simply not exist in a PHP object.
                 if ('xmlns' === $attribute) {
-                    continue;
+                    break;
                 }
                 $attributeMeta = $meta->phpObject->elementMeta($attribute);
                 // Attribute in the XML may not exist as a property name in the class.
@@ -212,7 +213,7 @@ class XmlParser
                 case 'double':
                 case 'boolean':
                 case 'DateTime':
-                    continue;
+                    break;
                 default:
                     return $meta->phpType !== '' ? new $phpType() : null;
             }
@@ -258,7 +259,7 @@ class XmlParser
                 case 'double':
                 case 'boolean':
                 case 'DateTime':
-                    continue;
+                    break;
                 default:
                     return false;
             }
@@ -276,8 +277,7 @@ class XmlParser
      */
     private function setByValue(\stdClass $meta)
     {
-        return (
-            is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\Base64BinaryType', false) ||
+        return (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\Base64BinaryType', false) ||
             is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\BooleanType', false) ||
             is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\DecimalType', false) ||
             is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\DoubleType', false) ||
@@ -299,9 +299,9 @@ class XmlParser
     {
         switch ($meta->phpType) {
             case 'integer':
-                return (integer)$meta->strData;
+                return (int)$meta->strData;
             case 'double':
-                return (double)$meta->strData;
+                return (float)$meta->strData;
             case 'boolean':
                 return strtolower($meta->strData) === 'true';
             case 'DateTime':
@@ -326,11 +326,11 @@ class XmlParser
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\BooleanType', false)) {
             return strtolower($meta->strData) === 'true';
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\DecimalType', false)) {
-            return is_int(0 + $meta->strData) ? (integer)$meta->strData : (double)$meta->strData;
+            return is_int(0 + $meta->strData) ? (int)$meta->strData : (float)$meta->strData;
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\DoubleType', false)) {
-            return (double)$meta->strData;
+            return (float)$meta->strData;
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\IntegerType', false)) {
-            return (integer)$meta->strData;
+            return (int)$meta->strData;
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\StringType', false)) {
             return $meta->strData;
         } elseif (is_subclass_of($meta->phpObject, '\PWCode\eBaySDK\Types\TokenType', false)) {
